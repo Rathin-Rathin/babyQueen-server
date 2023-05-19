@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 //MongoDB
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.USER_DB}:${process.env.PASS_DB}@cluster0.z5uza0f.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -35,6 +35,12 @@ async function run() {
             const result = await productsCollection.find({
               $or:  [{ toyName: { $regex: dollName, $options: "i" } }],
             }).toArray();
+            res.send(result);
+        })
+        app.get('/myToys/:email', async (req, res) => {
+            const userEmail = req.params.email;
+            const query = {sellerEmail: userEmail}
+            const result = await productsCollection.find(query).toArray();
             res.send(result);
         })
 
