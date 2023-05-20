@@ -33,13 +33,13 @@ async function run() {
         app.get('/dollSearchByName/:name', async (req, res) => {
             const dollName = req.params.name;
             const result = await productsCollection.find({
-              $or:  [{ toyName: { $regex: dollName, $options: "i" } }],
+                $or: [{ toyName: { $regex: dollName, $options: "i" } }],
             }).toArray();
             res.send(result);
         })
         app.get('/myToys/:email', async (req, res) => {
             const userEmail = req.params.email;
-            const query = {sellerEmail: userEmail}
+            const query = { sellerEmail: userEmail }
             const result = await productsCollection.find(query).toArray();
             res.send(result);
         })
@@ -50,10 +50,25 @@ async function run() {
             res.send(result);
         })
 
-      
+        app.put('/updateMyToy/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const query = { _id: new ObjectId(id) };
+            const updateToy = {
+                $set: {
+                    price: data.price,
+                    quantity: data.quantity,
+                    description: data.description
+
+                }
+            }
+            const result = await productsCollection.updateOne(query, updateToy);
+            res.send(result);
+        })
+
 
         app.get('/allData', async (req, res) => {
-            const allData =await productsCollection.find().toArray();
+            const allData = await productsCollection.find().toArray();
             res.send(allData);
         })
 
